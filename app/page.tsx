@@ -125,11 +125,6 @@ export default function Home() {
           <p>Three phases from live dashboard to fully autonomous alpha execution.</p>
         </div>
         <div className="roadmap-timeline">
-          <div className="roadmap-track">
-            <div className="roadmap-dot active" />
-            <div className="roadmap-dot" />
-            <div className="roadmap-dot" />
-          </div>
           <div className="roadmap-cards">
             <article className="roadmap-card live">
               <div className="roadmap-label">
@@ -145,7 +140,7 @@ export default function Home() {
                 <time>July 2026</time>
               </div>
               <h3>Telegram Alpha Alerts</h3>
-              <p>Threshold-based token notifications pushed to Telegram. Score drops, fresh alpha deployments, whale volume spikes — real-time alerts wherever you trade.</p>
+              <p>Threshold-based token notifications pushed to Telegram. Score drops, fresh alpha deployments, whale volume spikes. Real-time alerts wherever you trade.</p>
             </article>
             <article className="roadmap-card">
               <div className="roadmap-label">
@@ -153,9 +148,23 @@ export default function Home() {
                 <time>August 2026</time>
               </div>
               <h3>Auto-Buy Bot</h3>
-              <p>Configurable on-chain snipe bot. Set score, volume, and narrative thresholds. Bot executes buy trades automatically — hands-free alpha capturing.</p>
+              <p>Configurable on-chain snipe bot. Set score, volume, and narrative thresholds. Bot executes buy trades automatically. Hands-free alpha capturing.</p>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section className="brand-cover-band" aria-label="NyxScout brand visual">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/brand/nyxscout-cover.png"
+          alt="NyxScout nocturnal token signal landscape"
+          width="1672"
+          height="941"
+        />
+        <div>
+          <span>NyxScout</span>
+          <strong>Find the signal while the field is still dark.</strong>
         </div>
       </section>
 
