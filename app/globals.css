@@ -1467,8 +1467,6 @@ input {
   .pagination { flex-direction: column; align-items: center; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-
 /* ── Market Pulse ── */
 .market-pulse {
   display: flex;
