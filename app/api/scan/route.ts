@@ -3,12 +3,28 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  try {
-    const res = await fetch("https://api.bankr.bot/discover?limit=200", {
-      headers: { Accept: "application/json" },
-      signal: AbortSignal.timeout(15000),
-    });
+  // Retry with different strategies for Railway's IP
+  async function tryFetch(url: string, attempt = 0): Promise<Response> {
+    const headers: Record<string, string> = {
+      "Accept": "application/json",
+      "User-Agent": "Mozilla/5.0 (compatible; NyxScout/1.0)",
+    };
+    if (attempt > 0) headers["Origin"] = "https://bankr.bot";
 
+    const res = await fetch(url, { headers, signal: AbortSignal.timeout(15000) });
+    if (!res.ok && attempt < 2) {
+      // Retry with different params
+      const urls = [
+        "https://api.bankr.bot/discover?limit=200",
+        "https://api.bankr.bot/discover?limit=200&sort=newest",
+      ];
+      return tryFetch(urls[attempt + 1] || url, attempt + 1);
+    }
+    return res;
+  }
+
+  try {
+    const res = await tryFetch("https://api.bankr.bot/discover?limit=200");
     if (!res.ok) throw new Error(`Bankr API returned ${res.status}`);
 
     const data = await res.json();
