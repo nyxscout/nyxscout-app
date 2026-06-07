@@ -1,0 +1,9 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm run build"
+
+[deploy]
+startCommand = "vinext start"
+healthcheckPath = "/"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
