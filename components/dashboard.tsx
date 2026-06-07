@@ -350,29 +350,12 @@ export function Dashboard() {
           {payload?.pagination && payload.pagination.totalPages > 1 && (
             <div className="pagination">
               <div className="pagination-info">
-                Showing {Math.min((payload.pagination.page - 1) * payload.pagination.limit + 1, payload.pagination.total)}–{Math.min(payload.pagination.page * payload.pagination.limit, payload.pagination.total)} of {payload.pagination.total}
+                {payload.pagination.total} tokens
               </div>
               <div className="pagination-controls">
-                <button className="page-btn" disabled={payload.pagination.page <= 1} onClick={() => setPage(payload.pagination.page - 1)}>← Prev</button>
-                {(function() {
-                  const total = payload.pagination.totalPages;
-                  const cur = payload.pagination.page;
-                  let pages: number[];
-                  if (total <= 7) {
-                    pages = Array.from({ length: total }, (_, j) => j + 1);
-                  } else if (cur <= 4) {
-                    pages = [1, 2, 3, 4, 5, -1, total];
-                  } else if (cur >= total - 3) {
-                    pages = [1, -1, total - 4, total - 3, total - 2, total - 1, total];
-                  } else {
-                    pages = [1, -1, cur - 1, cur, cur + 1, -1, total];
-                  }
-                  return pages.map((p, idx) =>
-                    p === -1 ? <span key={`e-${idx}`} className="page-ellipsis">…</span> :
-                      <button key={p} className={`page-btn ${p === cur ? "active" : ""}`} onClick={() => setPage(p)}>{p}</button>
-                  );
-                })()}
-                <button className="page-btn" disabled={payload.pagination.page >= payload.pagination.totalPages} onClick={() => setPage(payload.pagination.page + 1)}>Next →</button>
+                <button className="page-btn" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>←</button>
+                {renderPages(payload.pagination.totalPages, page, setPage)}
+                <button className="page-btn" disabled={page >= payload.pagination.totalPages} onClick={() => setPage(p => p + 1)}>→</button>
               </div>
               <div className="pagination-limit">
                 <select value={limit} onChange={(e) => { setLimit(Number(e.target.value)); setPage(1); }} className="page-limit-select">
@@ -444,6 +427,24 @@ function Stat({ value, label }: { value: string | number | undefined; label: str
       <span className="stat-value">{value ?? "-"}</span>
       <span className="stat-label">{label}</span>
     </div>
+  );
+}
+
+function renderPages(totalPages: number, currentPage: number, onSetPage: (p: number) => void) {
+  let pages: number[];
+  if (totalPages <= 7) {
+    pages = Array.from({ length: totalPages }, (_, j) => j + 1);
+  } else if (currentPage <= 4) {
+    pages = [1, 2, 3, 4, 5, -1, totalPages];
+  } else if (currentPage >= totalPages - 3) {
+    pages = [1, -1, totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+  } else {
+    pages = [1, -1, currentPage - 1, currentPage, currentPage + 1, -1, totalPages];
+  }
+  return pages.map((p, idx) =>
+    p === -1
+      ? <span key={`e-${idx}`} className="page-ellipsis">…</span>
+      : <button key={p} className={`page-btn${p === currentPage ? " active" : ""}`} onClick={() => onSetPage(p)}>{p}</button>
   );
 }
 
