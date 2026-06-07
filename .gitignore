@@ -20,4 +20,5 @@ worker/
 vite.config.ts
 drizzle.config.ts
 eslint.config.mjs
+!vite.config.ts
 .DS_Store
