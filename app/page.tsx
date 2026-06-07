@@ -117,6 +117,48 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Roadmap */}
+      <section className="roadmap-band" id="roadmap">
+        <div className="roadmap-heading">
+          <span>Roadmap</span>
+          <h2>Built in the open.</h2>
+          <p>Three phases from live dashboard to fully autonomous alpha execution.</p>
+        </div>
+        <div className="roadmap-timeline">
+          <div className="roadmap-track">
+            <div className="roadmap-dot active" />
+            <div className="roadmap-dot" />
+            <div className="roadmap-dot" />
+          </div>
+          <div className="roadmap-cards">
+            <article className="roadmap-card live">
+              <div className="roadmap-label">
+                <span className="roadmap-badge live">Live</span>
+                <time>June 2026</time>
+              </div>
+              <h3>Dashboard + Alpha Engine</h3>
+              <p>Live token feed with 8-signal scoring, deployer history, wallet watch, narrative classification, and market pulse analysis.</p>
+            </article>
+            <article className="roadmap-card">
+              <div className="roadmap-label">
+                <span className="roadmap-badge next">July</span>
+                <time>July 2026</time>
+              </div>
+              <h3>Telegram Alpha Alerts</h3>
+              <p>Threshold-based token notifications pushed to Telegram. Score drops, fresh alpha deployments, whale volume spikes — real-time alerts wherever you trade.</p>
+            </article>
+            <article className="roadmap-card">
+              <div className="roadmap-label">
+                <span className="roadmap-badge soon">August</span>
+                <time>August 2026</time>
+              </div>
+              <h3>Auto-Buy Bot</h3>
+              <p>Configurable on-chain snipe bot. Set score, volume, and narrative thresholds. Bot executes buy trades automatically — hands-free alpha capturing.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <footer className="landing-footer">
         <div>
           <Link href="/" className="brand" aria-label="NyxScout home">

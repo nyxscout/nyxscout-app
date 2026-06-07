@@ -474,6 +474,99 @@ input {
   margin: 0;
 }
 
+/* ── Roadmap ── */
+.roadmap-band {
+  display: grid;
+  justify-items: center;
+  padding: 96px 24px;
+  border-top: 1px solid var(--z2);
+  background: linear-gradient(180deg, rgba(167,139,250,0.03), transparent 300px);
+}
+.roadmap-heading {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.roadmap-heading span {
+  color: var(--violet);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.roadmap-heading h2 {
+  margin: 8px 0 0;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.roadmap-heading p {
+  margin: 12px auto 0;
+  max-width: 520px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.roadmap-timeline {
+  width: min(100%, 900px);
+  display: grid;
+  gap: 40px;
+}
+.roadmap-track {
+  display: none; /* hidden on mobile, show on desktop */
+}
+.roadmap-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.roadmap-card {
+  border: 1px solid var(--z2);
+  border-radius: 10px;
+  padding: 24px;
+  background: rgba(17, 17, 20, 0.6);
+  transition: border-color 0.2s;
+}
+.roadmap-card:hover { border-color: var(--z3); }
+.roadmap-card.live { border-color: rgba(52, 211, 153, 0.2); }
+.roadmap-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.roadmap-badge {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.roadmap-badge.live { background: var(--green-soft); color: var(--green); }
+.roadmap-badge.next { background: var(--violet-soft); color: var(--violet); }
+.roadmap-badge.soon { background: var(--z1); color: var(--dim); border: 1px solid var(--z2); }
+.roadmap-label time {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.65rem;
+  color: var(--dim);
+}
+.roadmap-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+.roadmap-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
 .landing-footer {
   display: grid;
   grid-template-columns: minmax(220px, 1fr) auto auto;
@@ -1168,6 +1261,9 @@ input {
   .nav,
   .topbar {
     padding: 0 16px;
+  }
+  .roadmap-cards {
+    grid-template-columns: 1fr;
   }
   .hero-section,
   .section-band {
