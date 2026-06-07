@@ -354,11 +354,10 @@ export function Dashboard() {
               </div>
               <div className="pagination-controls">
                 <button className="page-btn" disabled={payload.pagination.page <= 1} onClick={() => setPage(payload.pagination.page - 1)}>← Prev</button>
-                {Array.from({ length: Math.min(payload.pagination.totalPages, 7) }, (_, i) => {
-                  // Show pages around current
+                {(function() {
                   const total = payload.pagination.totalPages;
                   const cur = payload.pagination.page;
-                  let pages: number[] = [];
+                  let pages: number[];
                   if (total <= 7) {
                     pages = Array.from({ length: total }, (_, j) => j + 1);
                   } else if (cur <= 4) {
@@ -372,7 +371,7 @@ export function Dashboard() {
                     p === -1 ? <span key={`e-${idx}`} className="page-ellipsis">…</span> :
                       <button key={p} className={`page-btn ${p === cur ? "active" : ""}`} onClick={() => setPage(p)}>{p}</button>
                   );
-                })}
+                })()}
                 <button className="page-btn" disabled={payload.pagination.page >= payload.pagination.totalPages} onClick={() => setPage(payload.pagination.page + 1)}>Next →</button>
               </div>
               <div className="pagination-limit">
