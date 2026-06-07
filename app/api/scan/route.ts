@@ -33,8 +33,8 @@ export async function GET() {
     } catch {}
     if (attempt < 3) {
       const urls = [
-        "https://api.bankr.bot/discover?limit=200",
         "https://api.bankr.bot/discover?limit=200&sort=newest",
+        "https://api.bankr.bot/discover?limit=200",
         "https://api.bankr.bot/discover?limit=100",
       ];
       return tryFetch(urls[attempt + 1] || url, attempt + 1);
@@ -43,7 +43,7 @@ export async function GET() {
   }
 
   try {
-    const res = await tryFetch("https://api.bankr.bot/discover?limit=200");
+    const res = await tryFetch("https://api.bankr.bot/discover?limit=200&sort=newest");
 
     if (res && res.ok) {
       const data = await res.json();
