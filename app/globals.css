@@ -1407,6 +1407,68 @@ input {
   color: var(--violet);
 }
 
+/* ── Filter Bar ── */
+.filter-bar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--z1);
+  flex-wrap: wrap;
+}
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+.filter-group label { color: var(--dim); font-weight: 600; margin-right: 4px; text-transform: uppercase; }
+.filter-input {
+  height: 28px; border: 1px solid var(--z2); border-radius: 4px; background: var(--z0); color: var(--text);
+  padding: 0 8px; font-size: 0.72rem; font-family: var(--font-geist-mono), ui-monospace, monospace; outline: none; width: 130px;
+}
+.filter-input:focus { border-color: var(--violet); }
+.filter-narrow { width: 60px; }
+.filter-sep { color: var(--dim); font-size: 0.72rem; }
+.filter-clear {
+  background: none; border: 1px solid var(--z2); border-radius: 4px; color: var(--dim);
+  font-size: 0.62rem; font-family: var(--font-geist-mono), ui-monospace, monospace; padding: 2px 10px; cursor: pointer; transition: all 0.12s;
+}
+.filter-clear:hover { border-color: var(--red); color: var(--red); }
+
+/* ── Pagination ── */
+.pagination {
+  display: flex; align-items: center; justify-content: space-between; padding: 16px 0 8px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 0.72rem; flex-wrap: wrap; gap: 12px;
+}
+.pagination-info { color: var(--dim); }
+.pagination-controls { display: flex; align-items: center; gap: 2px; }
+.page-btn {
+  background: none; border: 1px solid transparent; border-radius: 4px; color: var(--muted);
+  font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 0.72rem; padding: 4px 10px; cursor: pointer;
+  transition: all 0.12s; min-width: 32px; text-align: center;
+}
+.page-btn:hover:not(:disabled) { border-color: var(--z3); color: var(--text); }
+.page-btn.active { background: var(--violet-soft); border-color: var(--violet); color: var(--violet); font-weight: 700; }
+.page-btn:disabled { opacity: 0.3; cursor: default; }
+.page-ellipsis { color: var(--dim); padding: 0 4px; }
+.pagination-limit { display: flex; align-items: center; gap: 4px; }
+.page-limit-select {
+  height: 28px; border: 1px solid var(--z2); border-radius: 4px; background: var(--z0); color: var(--text);
+  padding: 0 6px; font-size: 0.72rem; font-family: var(--font-geist-mono), ui-monospace, monospace; outline: none; cursor: pointer;
+}
+.page-limit-select:focus { border-color: var(--violet); }
+
+@media (max-width: 680px) {
+  .filter-bar { flex-direction: column; align-items: stretch; gap: 8px; padding: 8px 16px; }
+  .filter-group { flex-wrap: wrap; }
+  .filter-input { flex: 1; min-width: 0; }
+  .pagination { flex-direction: column; align-items: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
 /* ── Market Pulse ── */
 .market-pulse {
   display: flex;

@@ -49,6 +49,12 @@ export type ScanPayload = {
   };
   tokens: NyxToken[];
   alerts: NyxToken[];
+  pagination?: {
+    total: number;
+    page: number;
+    totalPages: number;
+    limit: number;
+  };
 };
 
 export function gradeClass(grade: string) {

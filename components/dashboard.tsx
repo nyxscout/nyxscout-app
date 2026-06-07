@@ -51,24 +51,46 @@ export function Dashboard() {
   const [watchWallets, setWatchWallets] = useState<string[]>(loadFromStorage(STORAGE_WATCH));
   const [watchPanel, setWatchPanel] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  // Filters
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [scoreMin, setScoreMin] = useState("");
+  const [scoreMax, setScoreMax] = useState("");
+  const [volMin, setVolMin] = useState("");
+  const [volMax, setVolMax] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(50);
+
+  // Build query string for API
+  function buildApiUrl(p: number, l: number): string {
+    const params = new URLSearchParams();
+    params.set("page", String(p));
+    params.set("limit", String(l));
+    if (dateFrom) params.set("dateFrom", dateFrom);
+    if (dateTo) params.set("dateTo", dateTo);
+    if (scoreMin) params.set("scoreMin", scoreMin);
+    if (scoreMax) params.set("scoreMax", scoreMax);
+    if (volMin) params.set("volMin", volMin);
+    if (volMax) params.set("volMax", volMax);
+    return `/api/scan?${params.toString()}`;
+  }
 
   // 1. Fetch scan data
   useEffect(() => {
     let cancelled = false;
     async function load() {
       try {
-        const response = await fetch("/api/scan", { cache: "no-store" });
+        const url = buildApiUrl(page, limit);
+        const response = await fetch(url, { cache: "no-store" });
         if (!response.ok) throw new Error(`Scan failed: ${response.status}`);
         const data = (await response.json()) as ScanPayload;
         if (!cancelled) {
-          // Track score changes
           const now = Date.now();
           const newScores: Record<string, number> = {};
           for (const t of data.tokens) {
             newScores[t.address] = t.score;
           }
           setPrevScores((prev) => {
-            // Only keep tracked tokens' prev scores
             const kept: Record<string, number> = {};
             for (const addr of tracked) {
               if (prev[addr] !== undefined) kept[addr] = prev[addr];
@@ -76,7 +98,6 @@ export function Dashboard() {
             }
             return kept;
           });
-
           setPayload(data);
           setError(null);
         }
@@ -87,9 +108,9 @@ export function Dashboard() {
       }
     }
     load();
-    const timer = window.setInterval(load, 30000);
+    const timer = window.setInterval(load, 60000); // 60s now (we paginate)
     return () => { cancelled = true; window.clearInterval(timer); };
-  }, []);
+  }, [page, limit, dateFrom, dateTo, scoreMin, scoreMax, volMin, volMax]);
 
   // 1b. Classify narratives
   useEffect(() => {
@@ -212,7 +233,11 @@ export function Dashboard() {
   return (
     <main className="dashboard-shell">
       <header className="topbar">
-        <Link href="/" className="brand">🌙 Nyx<span>Scout</span></Link>
+        <Link href="/" className="brand">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/nyxscout-logo-mark.png" alt="" width="28" height="28" />
+          Nyx<span>Scout</span>
+        </Link>
         <div className="search-box">
           <input ref={searchRef} type="search" value={query} onChange={(e) => { setQuery(e.target.value); setExpanded(null); }} placeholder="Filter tokens..." aria-label="Filter tokens" />
         </div>
@@ -245,6 +270,31 @@ export function Dashboard() {
             {n !== "All" && payload?.tokens ? ` (${payload.tokens.filter((t) => narratives[t.address] === n).length})` : ""}
           </button>
         ))}
+      </div>
+
+      {/* Filter Bar */}
+      <div className="filter-bar">
+        <div className="filter-group">
+          <label>Deployed</label>
+          <input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1); }} className="filter-input" title="From" />
+          <span className="filter-sep">—</span>
+          <input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1); }} className="filter-input" title="To" />
+        </div>
+        <div className="filter-group">
+          <label>Score</label>
+          <input type="number" placeholder="Min" value={scoreMin} onChange={(e) => { setScoreMin(e.target.value); setPage(1); }} className="filter-input filter-narrow" min={0} max={100} />
+          <span className="filter-sep">—</span>
+          <input type="number" placeholder="Max" value={scoreMax} onChange={(e) => { setScoreMax(e.target.value); setPage(1); }} className="filter-input filter-narrow" min={0} max={100} />
+        </div>
+        <div className="filter-group">
+          <label>Volume</label>
+          <input type="number" placeholder="Min $" value={volMin} onChange={(e) => { setVolMin(e.target.value); setPage(1); }} className="filter-input" min={0} />
+          <span className="filter-sep">—</span>
+          <input type="number" placeholder="Max $" value={volMax} onChange={(e) => { setVolMax(e.target.value); setPage(1); }} className="filter-input" min={0} />
+        </div>
+        {(dateFrom || dateTo || scoreMin || scoreMax || volMin || volMax) && (
+          <button className="filter-clear" onClick={() => { setDateFrom(""); setDateTo(""); setScoreMin(""); setScoreMax(""); setVolMin(""); setVolMax(""); setPage(1); }}>Clear</button>
+        )}
       </div>
 
       <MarketPulse tokens={tokens.map((t) => ({ ...t, narrative: narratives[t.address] }))} />
@@ -295,6 +345,45 @@ export function Dashboard() {
                 ))}
               </tbody>
             </table>
+          )}
+          {/* Pagination */}
+          {payload?.pagination && payload.pagination.totalPages > 1 && (
+            <div className="pagination">
+              <div className="pagination-info">
+                Showing {Math.min((payload.pagination.page - 1) * payload.pagination.limit + 1, payload.pagination.total)}–{Math.min(payload.pagination.page * payload.pagination.limit, payload.pagination.total)} of {payload.pagination.total}
+              </div>
+              <div className="pagination-controls">
+                <button className="page-btn" disabled={payload.pagination.page <= 1} onClick={() => setPage(payload.pagination.page - 1)}>← Prev</button>
+                {Array.from({ length: Math.min(payload.pagination.totalPages, 7) }, (_, i) => {
+                  // Show pages around current
+                  const total = payload.pagination.totalPages;
+                  const cur = payload.pagination.page;
+                  let pages: number[] = [];
+                  if (total <= 7) {
+                    pages = Array.from({ length: total }, (_, j) => j + 1);
+                  } else if (cur <= 4) {
+                    pages = [1, 2, 3, 4, 5, -1, total];
+                  } else if (cur >= total - 3) {
+                    pages = [1, -1, total - 4, total - 3, total - 2, total - 1, total];
+                  } else {
+                    pages = [1, -1, cur - 1, cur, cur + 1, -1, total];
+                  }
+                  return pages.map((p, idx) =>
+                    p === -1 ? <span key={`e-${idx}`} className="page-ellipsis">…</span> :
+                      <button key={p} className={`page-btn ${p === cur ? "active" : ""}`} onClick={() => setPage(p)}>{p}</button>
+                  );
+                })}
+                <button className="page-btn" disabled={payload.pagination.page >= payload.pagination.totalPages} onClick={() => setPage(payload.pagination.page + 1)}>Next →</button>
+              </div>
+              <div className="pagination-limit">
+                <select value={limit} onChange={(e) => { setLimit(Number(e.target.value)); setPage(1); }} className="page-limit-select">
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                  <option value={200}>200</option>
+                </select>
+              </div>
+            </div>
           )}
         </section>
 
