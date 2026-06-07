@@ -128,18 +128,13 @@ export default function Home() {
         </div>
         <nav aria-label="Landing footer links">
           <Link href="/dashboard">Dashboard</Link>
-          <a href="#signal-model">Signal model</a>
-          <a href="https://github.com/nyxscout" target="_blank" rel="noreferrer">
+          <a href="https://github.com/nyxscout/nyxscout-app" target="_blank" rel="noreferrer">
             GitHub
           </a>
-          <a href="https://x.com/nyxscout" target="_blank" rel="noreferrer">
+          <a href="https://x.com/crystellenica" target="_blank" rel="noreferrer">
             X
           </a>
         </nav>
-        <div className="footer-status">
-          <span />
-          Scanner online
-        </div>
       </footer>
     </main>
   );
