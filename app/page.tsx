@@ -17,6 +17,8 @@ export default function Home() {
     <main className="site-shell premium-landing">
       <header className="nav landing-nav">
         <Link href="/" className="brand" aria-label="NyxScout home">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/nyxscout-logo-mark.png" alt="" width="28" height="28" />
           Nyx<span>Scout</span>
         </Link>
         <Link href="/dashboard" className="button button-ghost">
@@ -101,9 +103,25 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="brand-cover-band" aria-label="NyxScout brand visual">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/brand/nyxscout-cover.png"
+          alt="NyxScout nocturnal token signal landscape"
+          width="1672"
+          height="941"
+        />
+        <div>
+          <span>NyxScout</span>
+          <strong>Find the signal while the field is still dark.</strong>
+        </div>
+      </section>
+
       <footer className="landing-footer">
         <div>
           <Link href="/" className="brand" aria-label="NyxScout home">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brand/nyxscout-logo-mark.png" alt="" width="28" height="28" />
             Nyx<span>Scout</span>
           </Link>
           <p>Live Bankr token scoring for early alpha hunters.</p>
