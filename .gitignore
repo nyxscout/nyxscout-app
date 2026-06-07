@@ -5,6 +5,8 @@ build/
 output/
 db/
 *.json
+!.env
+!railway.json
 .env
 .env.local
 PRODUCT.md
