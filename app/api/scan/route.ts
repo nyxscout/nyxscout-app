@@ -83,15 +83,71 @@ async function fetchBankrTokens(): Promise<{ tokens: RawToken[]; source: string 
   if (res && res.ok) {
     const data = await res.json();
     const raw = (data.results || []) as Record<string, unknown>[];
-    const tokens: RawToken[] = raw.map((t) => ({
-      name: (t.name as string) || "?", symbol: (t.symbol as string) || "?", address: (t.tokenAddress as string) || "",
-      score: 0, grade: "SKIP", flags: [] as string[],
-      vol_24h: (t.vol24h as number) || 0, market_cap_usd: (t.marketCapUsd as number) || 0,
-      tx_count_24h: (t.txCount24h as number) || 0, price_change_24h: (t.priceChange24h as number) || 0,
-      deployed_at: ((t.deployedAt as string) || "").slice(0, 19).replace("T", " "),
-      deployer: (t.deployerXUsername as string) || null, deployer_address: (t.deployerAddress as string) || null,
-      fee_recipient: (t.feeRecipientXUsername as string) || null, website: (t.websiteUrl as string) || null, tweet_url: (t.tweetUrl as string) || null,
-    }));
+    const tokens: RawToken[] = raw.map((t) => {
+      const vol = (t.vol24h as number) || 0;
+      const mcap = (t.marketCapUsd as number) || 0;
+      const tx = (t.txCount24h as number) || 0;
+      const price = (t.priceChange24h as number) || 0;
+      const hasWebsite = !!(t.websiteUrl as string);
+      const hasTwitter = !!(t.tweetUrl as string);
+      const fee = (t.feeRecipientXUsername as string) || "";
+      const dep = (t.deployerXUsername as string) || "";
+      const skinInGame = !!dep && !!fee && dep.toLowerCase() === fee.toLowerCase();
+
+      // 8-signal scoring
+      let score = 0;
+      const flags: string[] = [];
+
+      // Volume (+25)
+      if (vol >= 200000) { score += 25; flags.push("whale_vol"); }
+      else if (vol >= 50000) { score += 20; flags.push("strong_vol"); }
+      else if (vol >= 10000) { score += 12; }
+
+      // Website (+15)
+      if (hasWebsite) { score += 15; }
+
+      // Twitter (+10)
+      if (hasTwitter) { score += 10; }
+
+      // Skin in game (+20)
+      if (skinInGame) { score += 20; }
+
+      // Tx/MCap ratio (+15)
+      const ratio = mcap > 0 && tx > 0 ? (vol / mcap) : 0;
+      if (ratio > 1.5) { score += 15; flags.push("high_turnover"); }
+      else if (ratio > 0.5) { score += 8; }
+
+      // Price action (+15)
+      if (price >= 50) { score += 15; flags.push("strong_pump"); }
+      else if (price >= 15) { score += 10; }
+      else if (price >= 5) { score += 5; }
+      else if (price <= -30) { score -= 5; flags.push("dump"); }
+
+      // Freshness (+5)
+      const deployed = (t.deployedAt as string) || "";
+      if (deployed) {
+        const diff = Date.now() - new Date(deployed.slice(0, 19).replace("T", " ") + "Z").getTime();
+        if (diff < 4 * 60 * 60 * 1000) { score += 5; flags.push("fresh"); }
+        else if (diff < 24 * 60 * 60 * 1000) { score += 3; }
+      }
+
+      // Grading
+      let grade = "SKIP";
+      if (score >= 80) { grade = "ALPHA"; }
+      else if (score >= 65) { grade = "BETA"; }
+      else if (score >= 50) { grade = "GAMMA"; }
+      else if (score >= 35) { grade = "DELTA"; }
+
+      return {
+        name: (t.name as string) || "?", symbol: (t.symbol as string) || "?", address: (t.tokenAddress as string) || "",
+        score, grade, flags,
+        vol_24h: vol, market_cap_usd: mcap,
+        tx_count_24h: tx, price_change_24h: price,
+        deployed_at: deployed.slice(0, 19).replace("T", " "),
+        deployer: dep || null, deployer_address: (t.deployerAddress as string) || null,
+        fee_recipient: fee || null, website: (t.websiteUrl as string) || null, tweet_url: (t.tweetUrl as string) || null,
+      };
+    });
     return { tokens, source: "live" };
   }
 
