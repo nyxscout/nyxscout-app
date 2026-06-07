@@ -103,20 +103,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="brand-cover-band" aria-label="NyxScout brand visual">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/brand/nyxscout-cover.png"
-          alt="NyxScout nocturnal token signal landscape"
-          width="1672"
-          height="941"
-        />
-        <div>
-          <span>NyxScout</span>
-          <strong>Find the signal while the field is still dark.</strong>
-        </div>
-      </section>
-
       {/* Roadmap */}
       <section className="roadmap-band" id="roadmap">
         <div className="roadmap-heading">
