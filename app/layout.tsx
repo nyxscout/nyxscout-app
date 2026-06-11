@@ -40,6 +40,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          name="virtual-protocol-site-verification"
+          content="6ff5351902ffc85f6698e39f4d2e4be3"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
