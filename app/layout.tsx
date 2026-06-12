@@ -43,7 +43,7 @@ export default function RootLayout({
       <head>
         <meta
           name="virtual-protocol-site-verification"
-          content="6ff5351902ffc85f6698e39f4d2e4be3"
+          content="dcf77ee1bedb5b682f7a3e442d320bce"
         />
       </head>
       <body
